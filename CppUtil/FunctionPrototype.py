@@ -7,6 +7,11 @@ class FunctionPrototype:
     mArgList = []
     mPrototype = ""
     def __init__(self, prototype: str):
+        self.mConstReturn = ""
+        self.mReturnType = ""
+        self.mFunctionName = ""
+        self.mArgList = []
+        self.mPrototype = ""
         self.mPrototype = prototype
         self.__Parse()
 
@@ -48,8 +53,8 @@ class FunctionPrototype:
                         break
                 if doNext == False and ele:
                     argInfo.append(ele)
-            print(argInfo)                    
             if argInfo != []:
+                # print(argInfo)                    
                 self.mArgList.append(argInfo)                        
             
     
