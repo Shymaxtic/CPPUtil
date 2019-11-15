@@ -24,101 +24,101 @@ class TestCppUtil(unittest.TestCase):
     def setUp(self):
         pass
 
-    # def test_Prototype_1(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)
+    def test_Prototype_1(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)
 
-    # def test_Prototype_2(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1&, const ArgType2&) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)        
+    def test_Prototype_2(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1&, const ArgType2&) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)        
 
-    # def test_Prototype_3(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1 &, const ArgType2 &) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)          
+    def test_Prototype_3(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1 &, const ArgType2 &) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)          
 
-    # def test_Prototype_4(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1 &arg1, const ArgType2 &arg2) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)  
+    def test_Prototype_4(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1 &arg1, const ArgType2 &arg2) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)  
 
-    # def test_Prototype_5(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1&arg1,const ArgType2&arg2) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)          
+    def test_Prototype_5(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1&arg1,const ArgType2&arg2) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)          
         
-    # def test_Prototype_6(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1 &&arg1, const ArgType2 &&arg2) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, False)  
+    def test_Prototype_6(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1 &&arg1, const ArgType2 &&arg2) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, False)  
 
-    # def test_Prototype_7(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1&& arg1, const ArgType2&& arg1) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, False)         
+    def test_Prototype_7(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1&& arg1, const ArgType2&& arg1) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, False)         
 
-    # def test_Prototype_8(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1** arg1, const ArgType2** arg1) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, False)  
+    def test_Prototype_8(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1** arg1, const ArgType2** arg1) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, False)  
 
-    # def test_Prototype_9(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1* arg1, const ArgType2* arg1) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, False)  
+    def test_Prototype_9(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1* arg1, const ArgType2* arg1) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, False)  
 
-    # def test_Prototype_10(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)     
+    def test_Prototype_10(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
+        prototype = "const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)     
 
-    # def test_Prototype_11(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1* const, const ArgType2* const) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)              
+    def test_Prototype_11(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
+        prototype = "const bool DoSomething(const ArgType1* const, const ArgType2* const) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)              
 
-    # def test_Prototype_12(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1*const, const ArgType2*const) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)  
+    def test_Prototype_12(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
+        prototype = "const bool DoSomething(const ArgType1*const, const ArgType2*const) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)  
 
-    # def test_Prototype_13(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1 * const a, const ArgType2 * const b) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)        
+    def test_Prototype_13(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
+        prototype = "const bool DoSomething(const ArgType1 * const a, const ArgType2 * const b) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)        
 
-    # def test_Prototype_14(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1 *const a, const ArgType2 *const b) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)     
+    def test_Prototype_14(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
+        prototype = "const bool DoSomething(const ArgType1 *const a, const ArgType2 *const b) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)     
 
-    # def test_Prototype_15(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
-    #     prototype = "const bool DoSomething(const ArgType1 const a, const ArgType2 const b) const"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, False)   
+    def test_Prototype_15(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
+        prototype = "const bool DoSomething(const ArgType1 const a, const ArgType2 const b) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, False)   
 
-    # def test_Prototype_16(self):
-    #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
-    #     prototype = "bool DoSomething(const ArgType1* const a, const ArgType2* const b)"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, False)   
+    def test_Prototype_16(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
+        prototype = "bool DoSomething(const ArgType1* const a, const ArgType2* const b)"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, False)   
 
     def test_Prototype_17(self):
         testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
