@@ -29,17 +29,30 @@ class FunctionPrototype:
         self.mReturnType = ""
         self.mFunctionName = ""
         self.mArgList = []
-        self.mPrototype = ""
         self.mPrototype = prototype
+        self.mRegrexPrototype = ""
+        self.mLastConst = ""
         self.__Parse()
 
     def CheckMatch(self, prototype: str):
         pass
     
     def __Parse(self):
-        """Parse to get element from protype
+        """Parse to get element from prototype
         Ex: 
         const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const
+        const     bool    DoSomething   (const ArgType1 &arg1, const ArgType2 &arg2     ) const
+        const bool DoSomething(const ArgType1 &arg1, const ArgType2 &arg2) const
+        const bool DoSomething(const ArgType1 & arg1, const ArgType2 & arg2) const
+        const bool DoSomething(const ArgType1 * const arg1, const ArgType2 & arg2) const
+        const bool DoSomething(const ArgType1 &, const ArgType2 &) const
+        const bool DoSomething(const ArgType1&, const ArgType2&) const
+        const bool DoSomething(const std::cxx11::string arg1)
+        const bool DoSomething(const std::string arg1)
+        Regrex:
+        const\s+bool\s+DoSomething\s*\(const\s+ArgType1\s*&\s*[a-zA-Z1-9]*\s*,\s*const\s+ArgType2\s*&\s*[a-zA-Z1-9]*\s*\) const
+
+
         const bool DoSomething(const ArgType1** arg1, const ArgType2** arg2) const
         const bool DoSomething(const ArgType1&& arg1, const ArgType2&& arg2) const
         const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const
@@ -48,38 +61,58 @@ class FunctionPrototype:
         bool DoSomeThing(ArgType1&, ArgType2&)
         void DoSomeThing()
        """
+        # preprocess, force only 1 space.
+        self.mPrototype = re.sub(' +', ' ', self.mPrototype)
         ret = re.split(r'\(|\)', self.mPrototype)
-    #    print(ret)
-        functionNameSide = ret[0].split(" ")
-        self.mFunctionName = functionNameSide[-1]
-        self.mReturnType = functionNameSide[-2]
-        if len(functionNameSide) == 3:
-            self.mConstReturn = functionNameSide[-3]
-        argListSide = ret[1].split(",")
-        specificChar = ['**', '&&', '&', '*']
-        for arg in argListSide:
-            argInfo = []
-            for ele in arg.split(" "):
-                doNext = False
-                for speChar in specificChar:
-                    if speChar in ele:
-                        for e in ele.split(speChar):
-                            if e:
-                                argInfo.append(e)
-                        argInfo.append(speChar)
-                        doNext = True
-                        break
-                if doNext == False and ele:
-                    argInfo.append(ele)
-            if argInfo != []:
-                # print(argInfo)                    
-                self.mArgList.append(argInfo)                        
-            
-    
-        print("Parsed:{} {} {}".format(self.mConstReturn, self.mReturnType, self.mFunctionName))
-        # print("Arguments:", self.mArgList)
-        for arg in self.mArgList:
-            print(arg)
+        functionNameSide = ret[0]
+        # print("functionNameSide=", functionNameSide)
+        # process for regex
+        functionNameSide = functionNameSide.replace(' ', r'\s+')
+        print("functionNameSide=", functionNameSide)
+        # Get argument info
+        argListSide = ret[1]
+        argInfoList = argListSide.split(',')
+        searcher = re.compile(r'(const\s*)?[\w|\d|:{2}]+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}(const)?\s*)|(\s*\*{1}\s*(const)?))')
+        for arg in argInfoList:
+            # print("arg=", arg)
+            tmp = searcher.search(arg)
+            if tmp:
+                # print("original=", tmp.string)
+                # print("processed=", tmp.group())
+                argListSide = argListSide.replace(tmp.string, tmp.group())
+        # remove space near , &, *, &&, **
+        print("argListSide=", argListSide)
+        argListSide = re.sub(r'\s*,\s*', ',', argListSide)
+        argListSide = re.sub(r'\s*&{2}\s*', r'\\s-&{2}\\s-', argListSide)
+        print("&& argListSide=", argListSide)
+        argListSide = re.sub(r'\s*&{1}\s*', r'\\s-&{1}\\s-', argListSide)
+        print("& argListSide=", argListSide)
+        # dummy replace
+        argListSide = re.sub(r'\s*\*{2}\s*', r'\\s-\\*{2}\\s-', argListSide)
+        print("** argListSide=", argListSide)
+        # dummy replace
+        argListSide = re.sub(r'\s*\*{1}\s*', r'\\s-\\*{1}\\s-', argListSide)
+        print("* argListSide=", argListSide)
+        # process for regex
+        argListSide = argListSide.replace(' ', r'\s+')
+        argListSide = argListSide.replace(',', r'\\s*,\\s*')
+        argListSide = argListSide.replace('-', r'*')
+        print("argListSide=", argListSide)
+        # construct regex
+        self.mRegrexPrototype = functionNameSide
+
+        # print("Parsed:{} {} {}".format(self.mConstReturn, self.mReturnType, self.mFunctionName))
+        # for arg in self.mArgList:
+        #     print(arg)
+        # # init regular expression.
+        # self.mRegrexPrototype = r"{}\s+{}\s+{}\s*\(".format(self.mConstReturn, self.mReturnType, self.mFunctionName)
+        # for i, argInfo in enumerate(self.mArgList):
+        #     for token in argInfo:
+        #         self.mRegrexPrototype += r"\s*{}".format(token.replace("*", r"\*"))
+        #     if i < len(self.mArgList) - 1:
+        #         self.mRegrexPrototype += ","
+        # self.mRegrexPrototype += r"\s*)\s*{}".format(self.mLastConst)
+        # print(self.mRegrexPrototype)
 
 
        
