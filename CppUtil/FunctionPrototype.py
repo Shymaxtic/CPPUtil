@@ -17,7 +17,7 @@
 
 
 import re
-D_ARGUMENT_REGEX = r'(const\s*)?[\w|\d|:{2}]+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}(const)?\s*)|(\s*\*{1}\s*(const)?))'
+D_ARGUMENT_REGEX = r'(const\s*)?[\w|\d|:{2}]+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}(const)?\s*)|(\s*\*{1}\s*(const)?)|(\s+(const)?))'
 D_ATUTO_STD = '__cxx11'
 class FunctionPrototype:
     mConstReturn = ""
@@ -50,7 +50,7 @@ class FunctionPrototype:
             tmp = searcher.search(arg)
             if tmp:
                 prototype = prototype.replace(tmp.string, tmp.group())
-        # print("prototype=", prototype)
+        print("prototype=", prototype)
         return self.mSearcher.search(prototype) != None
         
 
@@ -69,30 +69,37 @@ class FunctionPrototype:
        """
         # Preprocess, force only 1 space.
         self.mPrototype = re.sub(' +', ' ', self.mPrototype)
-        # print(self.mPrototype)
+        print(self.mPrototype)
         sections = re.split(r'\(|\)', self.mPrototype)
         functionNameSide = sections[0]
         # print("functionNameSide=", functionNameSide)
-        # process for regex
+
+        # Process for regex
         functionNameSide = functionNameSide.replace(' ', r'\s+')
         # print("functionNameSide=", functionNameSide)
+
         # Get argument info
         argListSide = sections[1]
         argInfoList = argListSide.split(',')
         searcher = re.compile(D_ARGUMENT_REGEX)
+
         # Remove argument variable.
         for arg in argInfoList:
             tmp = searcher.search(arg)
             if tmp:
                 argListSide = argListSide.replace(tmp.string, tmp.group())
 
-        # Process for ','
+        print(argListSide)
+        # Process for ','. Remove space 
         argListSide = re.sub(r'\s*,\s*', ',', argListSide)
-        
-        # Process for '&&'
+
+        # fix bug in case (ArgType1 arg1, ArgType2 arg2) -> ArgType1, ArgType2(space)
+        argListSide = argListSide.rstrip()
+
+        # Process for '&&'.
         argListSide = re.sub(r'\s*&{2}\s*', r'\\s-&{2}\\s-', argListSide)
 
-        # Process for '&'
+        # Process for '&'.
         argListSide = re.sub(r'\s*&{1}\s*', r'\\s-&{1}\\s-', argListSide)
 
         # Process for '**'
@@ -102,7 +109,9 @@ class FunctionPrototype:
         argListSide = re.sub(r'\s*\*{1}\s*', r'\\s-\\*{1}\\s-', argListSide) # dummy replace '-'
 
         # Process for regex
+        print(argListSide)
         argListSide = argListSide.replace(' ', r'\s+')
+        print(argListSide)
         argListSide = argListSide.replace(',', r'\s*,\s*')
         argListSide = argListSide.replace('-', r'*')
 
@@ -117,7 +126,7 @@ class FunctionPrototype:
         self.mRegrexPrototype = functionNameSide + r'\s*\(\s*' + argListSide + r'\s*\)\s*'
         if len(sections) == 3 and sections[2].strip() == 'const':
             self.mRegrexPrototype += sections[2].strip()
-        # print("mRegrexPrototype=", self.mRegrexPrototype)
+        print("mRegrexPrototype=", self.mRegrexPrototype)
         self.mSearcher = re.compile(self.mRegrexPrototype)
 
 

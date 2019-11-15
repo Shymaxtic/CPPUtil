@@ -144,11 +144,29 @@ class TestCppUtil(unittest.TestCase):
         ret = testObj.CheckMatch(prototype)
         self.assertEqual(ret, True)                     
 
-    # def test_Prototype_21(self):
-    #     testObj = FunctionPrototype("void DoSomeThing(ArgType1 a, ArgType2 b)")
-    #     prototype = "void DoSomeThing(ArgType1, ArgType2)"
+    def test_Prototype_21(self):
+        testObj = FunctionPrototype("void DoSomeThing(ArgType1 a, ArgType2 b)")
+        prototype = "void DoSomeThing(ArgType1, ArgType2)"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)  
+
+    def test_Prototype_22(self):
+        testObj = FunctionPrototype("void DoSomeThing(ArgType1 a)")
+        prototype = "void DoSomeThing(ArgType1)"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)       
+
+    # def test_Prototype_23(self):
+    #     testObj = FunctionPrototype("void DoSomeThing(void)")
+    #     prototype = "void DoSomeThing()"
     #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)  
+    #     self.assertEqual(ret, True)     
+
+    # def test_Prototype_24(self):
+    #     testObj = FunctionPrototype("void DoSomeThing()")
+    #     prototype = "void DoSomeThing(void)"
+    #     ret = testObj.CheckMatch(prototype)
+    #     self.assertEqual(ret, True)              
 
     # def test_Prototype_3(self):
     #     testObj = FunctionPrototype("bool DoSomething(ArgType1 &arg1, ArgType2 &arg2)")
