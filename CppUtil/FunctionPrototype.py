@@ -49,7 +49,7 @@ class FunctionPrototype:
             tmp = searcher.search(arg)
             if tmp:
                 prototype = prototype.replace(tmp.string, tmp.group())
-        # print(prototype)
+        print("prototype=", prototype)
         return self.mSearcher.search(prototype) != None
         
 
@@ -79,13 +79,13 @@ class FunctionPrototype:
        """
         # Preprocess, force only 1 space.
         self.mPrototype = re.sub(' +', ' ', self.mPrototype)
-        print(self.mPrototype)
+        # print(self.mPrototype)
         ret = re.split(r'\(|\)', self.mPrototype)
         functionNameSide = ret[0]
         # print("functionNameSide=", functionNameSide)
         # process for regex
         functionNameSide = functionNameSide.replace(' ', r'\s+')
-        print("functionNameSide=", functionNameSide)
+        # print("functionNameSide=", functionNameSide)
         # Get argument info
         argListSide = ret[1]
         argInfoList = argListSide.split(',')
@@ -113,10 +113,10 @@ class FunctionPrototype:
         argListSide = argListSide.replace(' ', r'\s+')
         argListSide = argListSide.replace(',', r'\s*,\s*')
         argListSide = argListSide.replace('-', r'*')
-        print("argListSide=", argListSide)
+        # print("argListSide=", argListSide)
         # Construct regex.
         self.mRegrexPrototype = functionNameSide + r'\s*\(\s*' + argListSide + r'\s*\)\s*'
-        print(self.mRegrexPrototype)
+        print("mRegrexPrototype=", self.mRegrexPrototype)
         self.mSearcher = re.compile(self.mRegrexPrototype)
 
 
