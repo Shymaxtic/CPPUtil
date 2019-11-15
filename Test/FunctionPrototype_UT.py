@@ -28,7 +28,7 @@ class TestCppUtil(unittest.TestCase):
         testObj = FunctionPrototype("const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const")
         prototype = "const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const"
         ret = testObj.CheckMatch(prototype)
-        # self.assertEqual(ret, True)
+        self.assertEqual(ret, True)
 
     # def test_Prototype_2(self):
     #     testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")

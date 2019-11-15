@@ -17,13 +17,14 @@
 
 
 import re
-
+D_ARGUMENT_REGEX = r'(const\s*)?[\w|\d|:{2}]+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}(const)?\s*)|(\s*\*{1}\s*(const)?))'
 class FunctionPrototype:
     mConstReturn = ""
     mReturnType = ""
     mFunctionName = ""
     mArgList = []
     mPrototype = ""
+    mSearcher = None
     def __init__(self, prototype: str):
         self.mConstReturn = ""
         self.mReturnType = ""
@@ -32,11 +33,26 @@ class FunctionPrototype:
         self.mPrototype = prototype
         self.mRegrexPrototype = ""
         self.mLastConst = ""
+        self.mSearcher = None
         self.__Parse()
 
     def CheckMatch(self, prototype: str):
-        pass
-    
+        # Preprocess, force only 1 space.
+        prototype = re.sub(' +', ' ', prototype)
+        ret = re.split(r'\(|\)', prototype)
+        # Get argument info
+        argListSide = ret[1]
+        argInfoList = argListSide.split(',')
+        searcher = re.compile(D_ARGUMENT_REGEX)
+        # Remove argument variable.
+        for arg in argInfoList:
+            tmp = searcher.search(arg)
+            if tmp:
+                prototype = prototype.replace(tmp.string, tmp.group())
+        # print(prototype)
+        return self.mSearcher.search(prototype) != None
+        
+
     def __Parse(self):
         """Parse to get element from prototype
         Ex: 
@@ -61,8 +77,9 @@ class FunctionPrototype:
         bool DoSomeThing(ArgType1&, ArgType2&)
         void DoSomeThing()
        """
-        # preprocess, force only 1 space.
+        # Preprocess, force only 1 space.
         self.mPrototype = re.sub(' +', ' ', self.mPrototype)
+        print(self.mPrototype)
         ret = re.split(r'\(|\)', self.mPrototype)
         functionNameSide = ret[0]
         # print("functionNameSide=", functionNameSide)
@@ -72,47 +89,35 @@ class FunctionPrototype:
         # Get argument info
         argListSide = ret[1]
         argInfoList = argListSide.split(',')
-        searcher = re.compile(r'(const\s*)?[\w|\d|:{2}]+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}(const)?\s*)|(\s*\*{1}\s*(const)?))')
+        searcher = re.compile(D_ARGUMENT_REGEX)
+        # Remove argument variable.
         for arg in argInfoList:
-            # print("arg=", arg)
             tmp = searcher.search(arg)
             if tmp:
-                # print("original=", tmp.string)
-                # print("processed=", tmp.group())
                 argListSide = argListSide.replace(tmp.string, tmp.group())
-        # remove space near , &, *, &&, **
-        print("argListSide=", argListSide)
+        # print("argListSide=", argListSide)
+
+        # Remove space near , &, *, &&, **
         argListSide = re.sub(r'\s*,\s*', ',', argListSide)
         argListSide = re.sub(r'\s*&{2}\s*', r'\\s-&{2}\\s-', argListSide)
-        print("&& argListSide=", argListSide)
+        # print("&& argListSide=", argListSide)
         argListSide = re.sub(r'\s*&{1}\s*', r'\\s-&{1}\\s-', argListSide)
-        print("& argListSide=", argListSide)
-        # dummy replace
+        # print("& argListSide=", argListSide)
+        # dummy replace '-'
         argListSide = re.sub(r'\s*\*{2}\s*', r'\\s-\\*{2}\\s-', argListSide)
-        print("** argListSide=", argListSide)
-        # dummy replace
+        # print("** argListSide=", argListSide)
+        # dummy replace '-'
         argListSide = re.sub(r'\s*\*{1}\s*', r'\\s-\\*{1}\\s-', argListSide)
-        print("* argListSide=", argListSide)
-        # process for regex
+        # print("* argListSide=", argListSide)
+        # Process for regex
         argListSide = argListSide.replace(' ', r'\s+')
-        argListSide = argListSide.replace(',', r'\\s*,\\s*')
+        argListSide = argListSide.replace(',', r'\s*,\s*')
         argListSide = argListSide.replace('-', r'*')
         print("argListSide=", argListSide)
-        # construct regex
-        self.mRegrexPrototype = functionNameSide
-
-        # print("Parsed:{} {} {}".format(self.mConstReturn, self.mReturnType, self.mFunctionName))
-        # for arg in self.mArgList:
-        #     print(arg)
-        # # init regular expression.
-        # self.mRegrexPrototype = r"{}\s+{}\s+{}\s*\(".format(self.mConstReturn, self.mReturnType, self.mFunctionName)
-        # for i, argInfo in enumerate(self.mArgList):
-        #     for token in argInfo:
-        #         self.mRegrexPrototype += r"\s*{}".format(token.replace("*", r"\*"))
-        #     if i < len(self.mArgList) - 1:
-        #         self.mRegrexPrototype += ","
-        # self.mRegrexPrototype += r"\s*)\s*{}".format(self.mLastConst)
-        # print(self.mRegrexPrototype)
+        # Construct regex.
+        self.mRegrexPrototype = functionNameSide + r'\s*\(\s*' + argListSide + r'\s*\)\s*'
+        print(self.mRegrexPrototype)
+        self.mSearcher = re.compile(self.mRegrexPrototype)
 
 
        
