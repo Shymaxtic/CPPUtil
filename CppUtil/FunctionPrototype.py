@@ -18,6 +18,7 @@
 
 import re
 D_ARGUMENT_REGEX = r'(const\s*)?[\w|\d|:{2}]+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}(const)?\s*)|(\s*\*{1}\s*(const)?))'
+D_ATUTO_STD = '__cxx11'
 class FunctionPrototype:
     mConstReturn = ""
     mReturnType = ""
@@ -65,17 +66,6 @@ class FunctionPrototype:
         const bool DoSomething(const ArgType1&, const ArgType2&) const
         const bool DoSomething(const std::cxx11::string arg1)
         const bool DoSomething(const std::string arg1)
-        Regrex:
-        const\s+bool\s+DoSomething\s*\(const\s+ArgType1\s*&\s*[a-zA-Z1-9]*\s*,\s*const\s+ArgType2\s*&\s*[a-zA-Z1-9]*\s*\) const
-
-
-        const bool DoSomething(const ArgType1** arg1, const ArgType2** arg2) const
-        const bool DoSomething(const ArgType1&& arg1, const ArgType2&& arg2) const
-        const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const
-        const bool DoSomething(const ArgType1 * const, const ArgType2 * const) const
-        bool DoSomething(ArgType1 &arg1, ArgType2 &arg2)
-        bool DoSomeThing(ArgType1&, ArgType2&)
-        void DoSomeThing()
        """
         # Preprocess, force only 1 space.
         self.mPrototype = re.sub(' +', ' ', self.mPrototype)
@@ -95,25 +85,34 @@ class FunctionPrototype:
             tmp = searcher.search(arg)
             if tmp:
                 argListSide = argListSide.replace(tmp.string, tmp.group())
-        # print("argListSide=", argListSide)
 
-        # Remove space near , &, *, &&, **
+        # Process for ','
         argListSide = re.sub(r'\s*,\s*', ',', argListSide)
+        
+        # Process for '&&'
         argListSide = re.sub(r'\s*&{2}\s*', r'\\s-&{2}\\s-', argListSide)
-        # print("&& argListSide=", argListSide)
+
+        # Process for '&'
         argListSide = re.sub(r'\s*&{1}\s*', r'\\s-&{1}\\s-', argListSide)
-        # print("& argListSide=", argListSide)
-        # dummy replace '-'
-        argListSide = re.sub(r'\s*\*{2}\s*', r'\\s-\\*{2}\\s-', argListSide)
-        # print("** argListSide=", argListSide)
-        # dummy replace '-'
-        argListSide = re.sub(r'\s*\*{1}\s*', r'\\s-\\*{1}\\s-', argListSide)
-        # print("* argListSide=", argListSide)
+
+        # Process for '**'
+        argListSide = re.sub(r'\s*\*{2}\s*', r'\\s-\\*{2}\\s-', argListSide) # dummy replace '-'
+
+        # Process for '*'
+        argListSide = re.sub(r'\s*\*{1}\s*', r'\\s-\\*{1}\\s-', argListSide) # dummy replace '-'
+
         # Process for regex
         argListSide = argListSide.replace(' ', r'\s+')
         argListSide = argListSide.replace(',', r'\s*,\s*')
         argListSide = argListSide.replace('-', r'*')
-        # print("argListSide=", argListSide)
+
+        # Process for auto generate std::__cxx
+        if 'std::' in argListSide:
+            if D_ATUTO_STD not in argListSide:
+                argListSide = argListSide.replace('std::', 'std::(' + D_ATUTO_STD + '::)?')
+            else:
+                argListSide = argListSide.replace(D_ATUTO_STD + '::', '(' + D_ATUTO_STD + '::)?')
+
         # Construct regex.
         self.mRegrexPrototype = functionNameSide + r'\s*\(\s*' + argListSide + r'\s*\)\s*'
         if len(sections) == 3 and sections[2].strip() == 'const':

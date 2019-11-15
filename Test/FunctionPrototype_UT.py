@@ -126,6 +126,30 @@ class TestCppUtil(unittest.TestCase):
         ret = testObj.CheckMatch(prototype)
         self.assertEqual(ret, False)        
 
+    def test_Prototype_18(self):
+        testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const std::string& arg2) const")
+        prototype = "const bool DoSomething(const ArgType1* const a, const std::__cxx11::string& b) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)      
+
+    def test_Prototype_19(self):
+        testObj = FunctionPrototype("const bool DoSomething(std::vector& arg1, const std::string& arg2) const")
+        prototype = "const bool DoSomething(std::__cxx11::vector& a, const std::__cxx11::string& b) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)        
+
+    def test_Prototype_20(self):
+        testObj = FunctionPrototype("const bool DoSomething(std::__cxx11::vector& arg1, const std::__cxx11::string& arg2) const")
+        prototype = "const bool DoSomething(std::vector& a, const std::string& b) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)                     
+
+    # def test_Prototype_21(self):
+    #     testObj = FunctionPrototype("void DoSomeThing(ArgType1 a, ArgType2 b)")
+    #     prototype = "void DoSomeThing(ArgType1, ArgType2)"
+    #     ret = testObj.CheckMatch(prototype)
+    #     self.assertEqual(ret, True)  
+
     # def test_Prototype_3(self):
     #     testObj = FunctionPrototype("bool DoSomething(ArgType1 &arg1, ArgType2 &arg2)")
     #     prototype = "bool DoSomething(ArgType1 &arg1, ArgType2 &arg2)"
@@ -145,11 +169,6 @@ class TestCppUtil(unittest.TestCase):
     #     ret = testObj.CheckMatch(prototype)
     #     self.assertEqual(ret, True)  
 
-    # def test_Prototype_6(self):
-    #     testObj = FunctionPrototype("void DoSomeThing(ArgType1, ArgType2)")
-    #     prototype = "void DoSomeThing(ArgType1, ArgType2)"
-    #     ret = testObj.CheckMatch(prototype)
-    #     self.assertEqual(ret, True)  
 
     # def test_Prototype_7(self):
     #     testObj = FunctionPrototype("void DoSomeThing(ArgType1 * arg1, ArgType2 * arg2)")
