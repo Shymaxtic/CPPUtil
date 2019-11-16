@@ -50,7 +50,7 @@ class FunctionPrototype:
             tmp = searcher.search(arg)
             if tmp:
                 prototype = prototype.replace(tmp.string, tmp.group())
-        print("prototype=", prototype)
+        # print("prototype=", prototype)
         return self.mSearcher.search(prototype) != None
         
 
@@ -128,7 +128,7 @@ class FunctionPrototype:
         self.mRegrexPrototype = functionNameSide + r'\s*\(\s*' + argListSide + r'\s*\)\s*'
         if sections[2].strip() == 'const':
             self.mRegrexPrototype += sections[2].strip()
-        print("mRegrexPrototype=", self.mRegrexPrototype)
+        # print("mRegrexPrototype=", self.mRegrexPrototype)
         self.mSearcher = re.compile(self.mRegrexPrototype)
 
 
