@@ -17,7 +17,7 @@
 
 
 import re
-D_ARGUMENT_REGEX = r'(const\s*)?[\w|\d|:{2}]+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}(const)?\s*)|(\s*\*{1}\s*(const)?)|(\s+(const)?))'
+D_ARGUMENT_REGEX = r'(const\s*)?[\w|\d|:{2}]+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}\s*(const)?\s*)|(\s*\*{1}\s*(const)?)|(\s+(const)?))'
 D_ATUTO_STD = '__cxx11'
 class FunctionPrototype:
     mConstReturn = ""
@@ -106,10 +106,10 @@ class FunctionPrototype:
             argListSide = re.sub(r'\s*&{1}\s*', r'\\s-&{1}\\s-', argListSide)
 
             # Process for '**'
-            argListSide = re.sub(r'\s*\*{2}\s*', r'\\s-\\*{2}\\s-', argListSide) # dummy replace '-'
+            argListSide = re.sub(r'\s*\*{2}\s*', r'\\s-\-{2}\\s-', argListSide) # dummy replace '-'
 
             # Process for '*'
-            argListSide = re.sub(r'\s*\*{1}\s*', r'\\s-\\*{1}\\s-', argListSide) # dummy replace '-'
+            argListSide = re.sub(r'\s*\*{1}\s*', r'\\s-\*{1}\\s-', argListSide) # dummy replace '-'
 
             # Process for regex
             argListSide = argListSide.replace(' ', r'\s+')
