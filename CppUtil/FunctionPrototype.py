@@ -20,12 +20,6 @@ import re
 D_ARGUMENT_REGEX = r'(const\s*)?[\w|\d|:{2}]+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}\s*(const)?\s*)|(\s*\*{1}\s*(const)?)|(\s+(const)?))'
 D_ATUTO_STD = '__cxx11'
 class FunctionPrototype:
-    mConstReturn = ""
-    mReturnType = ""
-    mFunctionName = ""
-    mArgList = []
-    mPrototype = ""
-    mSearcher = None
     def __init__(self, prototype: str):
         self.mConstReturn = ""
         self.mReturnType = ""
