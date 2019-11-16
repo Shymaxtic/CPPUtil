@@ -69,7 +69,7 @@ class FunctionPrototype:
        """
         # Preprocess, force only 1 space.
         self.mPrototype = re.sub(' +', ' ', self.mPrototype)
-        print(self.mPrototype)
+        # print(self.mPrototype)
         sections = re.split(r'\(|\)', self.mPrototype)
         functionNameSide = sections[0]
         # print("functionNameSide=", functionNameSide)
@@ -80,51 +80,53 @@ class FunctionPrototype:
 
         # Get argument info
         argListSide = sections[1]
-        argInfoList = argListSide.split(',')
-        searcher = re.compile(D_ARGUMENT_REGEX)
+        # In case (void) or ()
+        if argListSide == 'void' or not argListSide:
+            argListSide = '(void)?'
+        else:
+            argInfoList = argListSide.split(',')
+            searcher = re.compile(D_ARGUMENT_REGEX)
 
-        # Remove argument variable.
-        for arg in argInfoList:
-            tmp = searcher.search(arg)
-            if tmp:
-                argListSide = argListSide.replace(tmp.string, tmp.group())
+            # Remove argument variable.
+            for arg in argInfoList:
+                tmp = searcher.search(arg)
+                if tmp:
+                    argListSide = argListSide.replace(tmp.string, tmp.group())
 
-        print(argListSide)
-        # Process for ','. Remove space 
-        argListSide = re.sub(r'\s*,\s*', ',', argListSide)
+            # Process for ','. Remove space 
+            argListSide = re.sub(r'\s*,\s*', ',', argListSide)
 
-        # fix bug in case (ArgType1 arg1, ArgType2 arg2) -> ArgType1, ArgType2(space)
-        argListSide = argListSide.rstrip()
+            # fix bug in case (ArgType1 arg1, ArgType2 arg2) -> ArgType1, ArgType2(space)
+            argListSide = argListSide.rstrip()
 
-        # Process for '&&'.
-        argListSide = re.sub(r'\s*&{2}\s*', r'\\s-&{2}\\s-', argListSide)
+            # Process for '&&'.
+            argListSide = re.sub(r'\s*&{2}\s*', r'\\s-&{2}\\s-', argListSide)
 
-        # Process for '&'.
-        argListSide = re.sub(r'\s*&{1}\s*', r'\\s-&{1}\\s-', argListSide)
+            # Process for '&'.
+            argListSide = re.sub(r'\s*&{1}\s*', r'\\s-&{1}\\s-', argListSide)
 
-        # Process for '**'
-        argListSide = re.sub(r'\s*\*{2}\s*', r'\\s-\\*{2}\\s-', argListSide) # dummy replace '-'
+            # Process for '**'
+            argListSide = re.sub(r'\s*\*{2}\s*', r'\\s-\\*{2}\\s-', argListSide) # dummy replace '-'
 
-        # Process for '*'
-        argListSide = re.sub(r'\s*\*{1}\s*', r'\\s-\\*{1}\\s-', argListSide) # dummy replace '-'
+            # Process for '*'
+            argListSide = re.sub(r'\s*\*{1}\s*', r'\\s-\\*{1}\\s-', argListSide) # dummy replace '-'
 
-        # Process for regex
-        print(argListSide)
-        argListSide = argListSide.replace(' ', r'\s+')
-        print(argListSide)
-        argListSide = argListSide.replace(',', r'\s*,\s*')
-        argListSide = argListSide.replace('-', r'*')
+            # Process for regex
+            argListSide = argListSide.replace(' ', r'\s+')
+            argListSide = argListSide.replace(',', r'\s*,\s*')
+            argListSide = argListSide.replace('-', r'*')
 
-        # Process for auto generate std::__cxx
-        if 'std::' in argListSide:
-            if D_ATUTO_STD not in argListSide:
-                argListSide = argListSide.replace('std::', 'std::(' + D_ATUTO_STD + '::)?')
-            else:
-                argListSide = argListSide.replace(D_ATUTO_STD + '::', '(' + D_ATUTO_STD + '::)?')
+            # Process for auto generate std::__cxx
+            if 'std::' in argListSide:
+                if D_ATUTO_STD not in argListSide:
+                    argListSide = argListSide.replace('std::', 'std::(' + D_ATUTO_STD + '::)?')
+                else:
+                    argListSide = argListSide.replace(D_ATUTO_STD + '::', '(' + D_ATUTO_STD + '::)?')
+            
 
         # Construct regex.
         self.mRegrexPrototype = functionNameSide + r'\s*\(\s*' + argListSide + r'\s*\)\s*'
-        if len(sections) == 3 and sections[2].strip() == 'const':
+        if sections[2].strip() == 'const':
             self.mRegrexPrototype += sections[2].strip()
         print("mRegrexPrototype=", self.mRegrexPrototype)
         self.mSearcher = re.compile(self.mRegrexPrototype)
