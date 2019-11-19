@@ -232,7 +232,14 @@ class TestCppUtil(unittest.TestCase):
         testObj = FunctionPrototype("const bool DoSomething(const ArgType1* const arg1, const ArgType2* const arg2) const")
         prototype = "const bool DoSomething(const ArgType1 *const a, const ArgType2 *const b) const"
         ret = testObj.CheckMatch(prototype)
-        self.assertEqual(ret, True)                                
+        self.assertEqual(ret, True)   
+
+    # TODO: fix bug here.
+    def test_Prototype_36(self):
+        testObj = FunctionPrototype("DoSomething(const ArgType1* const arg1, const ArgType2* const arg2)")
+        prototype = "const bool DoSomething(const ArgType1 *const a, const ArgType2 *const b) const"
+        ret = testObj.CheckMatch(prototype)
+        self.assertEqual(ret, True)                                      
 
     # def test_Prototype_3(self):
     #     testObj = FunctionPrototype("bool DoSomething(ArgType1 &arg1, ArgType2 &arg2)")

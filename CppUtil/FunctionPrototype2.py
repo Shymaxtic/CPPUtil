@@ -19,7 +19,7 @@
 import re
 D_ARGUMENT_REGEX = r'(const\s*)?(\w|\d|:{2})+((\s*&{2}\s*)|(\s*&{1}\s*)|(\s*\*{2}\s*(const)?\s*)|(\s*\*{1}\s*(const)?)|(\s+(const)?))'
 D_ATUTO_STD = '__cxx11'
-class FunctionPrototype:
+class FunctionPrototype2:
     def __init__(self, prototype: str):
         self.mPrototype = prototype
         self.mRegrexPrototype = ""
@@ -31,8 +31,7 @@ class FunctionPrototype:
         prototype = re.sub(' +', ' ', prototype)
         ret = re.split(r'\(|\)', prototype)
         # Get argument info
-        argListSide = ret[1]
-        argInfoList = argListSide.split(',')
+        argInfoList = ret[1].split(',')
         searcher = re.compile(D_ARGUMENT_REGEX)
         # Remove argument variable.
         for arg in argInfoList:
@@ -45,20 +44,14 @@ class FunctionPrototype:
 
     def __Parse(self):
         """Parse to get element from prototype
-        Ex: 
-        const bool DoSomething(const ArgType1& arg1, const ArgType2& arg2) const
-        const     bool    DoSomething   (const ArgType1 &arg1, const ArgType2 &arg2     ) const
-        const bool DoSomething(const ArgType1 &arg1, const ArgType2 &arg2) const
-        const bool DoSomething(const ArgType1 & arg1, const ArgType2 & arg2) const
-        const bool DoSomething(const ArgType1 * const arg1, const ArgType2 & arg2) const
-        const bool DoSomething(const ArgType1 &, const ArgType2 &) const
-        const bool DoSomething(const ArgType1&, const ArgType2&) const
-        const bool DoSomething(const std::cxx11::string arg1)
-        const bool DoSomething(const std::string arg1)
        """
         # Preprocess, force only 1 space.
         self.mPrototype = re.sub(' +', ' ', self.mPrototype)
-        # print(self.mPrototype)
+
+        # Preproces, remove namespace
+        self.mPrototype = re.sub(r'\w+:{2}', '', self.mPrototype)
+
+        print(self.mPrototype)
         sections = re.split(r'\(|\)', self.mPrototype)
         functionNameSide = sections[0]
         # print("functionNameSide=", functionNameSide)
